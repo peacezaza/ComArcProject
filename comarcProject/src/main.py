@@ -77,22 +77,7 @@ class RAID:
                 return "RAID 6 Need 4 driver"
 
     
-R1 = RAID('RAID0',5)
-H1 = HDD('HDD1',2)
-H2 = HDD('HDD2',2)
-H3 = HDD('HDD3',2)
-H4 = HDD('HDD4',1)
-R1.addHDD(H1)
-R1.addHDD(H2)
-R1.addHDD(H3)
-R1.addHDD(H4)
-for i in R1.getRAIDLS():
-    print(f'NAME HDD : {i.getName()} CAPACITY : {i.getCapacity()}TB ')
 
-if isinstance(R1.getSUMcapacity(), int):
-    print(f'{R1.getSUMcapacity()}TB')
-else:
-    print(f'{R1.getSUMcapacity()}')
 
 
     
