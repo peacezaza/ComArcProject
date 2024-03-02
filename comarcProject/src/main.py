@@ -24,6 +24,9 @@ class RAID:
     def __init__(self,name,level):
         self.name = name
         self.level = level
+
+    def __int__(self):
+        return int(self.level)
     def getLevel(self):
         return self.level
     def getName(self):
