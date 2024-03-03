@@ -8,6 +8,7 @@ RESIZE = 8
 
 
 RAID_LIST = []
+hddList = []
 
 R1 = RAID('RAID1', 5)
 
@@ -36,10 +37,10 @@ def on_raid_listbox_click(event):
     print(selected_index)
     if selected_index:
 
-        for widget in LEFT_LOWER.winfo_children():
+        for widget in LEFT_MID.winfo_children():
             widget.destroy()
 
-        HHD_Listbox = tk.Listbox(LEFT_LOWER, width=50)
+        HHD_Listbox = tk.Listbox(LEFT_MID, width=50)
         HHD_Listbox.grid(rowspan=1, columnspan=2, sticky='nsew', padx=0)
 
         # Clear existing elements in the HHD_Listbox
@@ -77,7 +78,6 @@ def on_add_driver_click():
     def create_hdd():
         hdd_name = name_entry.get()
         hdd_capacity = capacity_entry.get()
-
         # Validate input and create HDD object
         if hdd_name and hdd_capacity.isdigit():
             new_hdd = HDD(hdd_name, int(hdd_capacity))
@@ -152,34 +152,35 @@ resized_image_deleteDriver = photo_deleteDriver.subsample(RESIZE, RESIZE)
 resized_image_setting = photo_setting.subsample(RESIZE, RESIZE)
 resized_image_hardDisk = photo_hardDisk.subsample(RESIZE, RESIZE)
 
-# tk.Button(window , text='A' , bg='red' , width=2).pack(side = tk.LEFT , fill = tk.BOTH , expand = True)
-# tk.Button(window , text='B' , bg='red').pack(side = tk.TOP , fill = tk.BOTH , expand = True)
-# tk.Button(window , text='C' , bg='red').pack(side = tk.LEFT , fill = tk.BOTH , expand = True)
+
 TOP_FARME = tk.Frame(window, width=1024, height=80, bg='#1B1A55', highlightbackground='#070F2B', highlightthickness=2)
 LEFT_FARME = tk.Frame(window, width=300, height=720, bg='#535C91', highlightbackground='#070F2B', highlightthickness=2)
 RIGTH_FARME = tk.Frame(window, width=774, height=720, bg='#9290C3')
 
-LEFT_UPPER = tk.Frame(LEFT_FARME, width=250, height=300, bg='white', highlightbackground='black', highlightthickness=2)
-LEFT_LOWER = tk.Frame(LEFT_FARME, width=250, height=300, bg='white', highlightbackground='black', highlightthickness=2)
+LEFT_UPPER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
+LEFT_MID = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
+LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
+
 
 Button_AddDriver = tk.Button(TOP_FARME, image=resized_image_addDriver, bg='#9290C3', command=on_add_driver_click)
 Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3')
 Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3')
 Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
 
-# Button_AddDriver.pack(side='left')
+
 Button_AddDriver.grid(row=0, column=0, sticky='nsew', padx=20, pady=10)
 Button_AddRAID.grid(row=0, column=1, sticky='nsew', padx=20, pady=10)
 Button_DeleteDriver.grid(row=0, column=2, sticky='nsew', padx=20, pady=10)
 Button_Setting.grid(row=0, column=3, sticky='nsew', padx=20, pady=10)
-# Button_AddDriver.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+
 
 TOP_FARME.grid(row=0, columnspan=3, sticky='nsew')
 LEFT_FARME.grid(row=1, column=0, sticky='nsew')
 RIGTH_FARME.grid(row=1, column=2, sticky='nsew')
 
-LEFT_UPPER.grid(row=0, columnspan=2, sticky='nsew', pady=20)
-LEFT_LOWER.grid(row=1, columnspan=2, sticky='nsew', pady=20)
+LEFT_UPPER.grid(row=0, columnspan=2, sticky='nsew', pady=10)
+LEFT_MID.grid(row=1, columnspan=2, sticky='nsew', pady=10)
+LEFT_LOWER.grid(row=2, columnspan=2, sticky='nsew', pady=10)
 
 RAID_Listbox = tk.Listbox(LEFT_UPPER, width=50)
 RAID_Listbox.grid(rowspan=1, columnspan=3, sticky='nsew')
@@ -190,16 +191,13 @@ for raid in RAID_LIST:
 
 RAID_Listbox.bind('<ButtonRelease-1>', on_raid_listbox_click)
 
-# TOP_FARM.pack()
-# LEFT_FARM.pack()
 
-# Disable resizing for LEFT_FARME and RIGTH_FARME
 LEFT_FARME.pack_propagate(False)
 RIGTH_FARME.pack_propagate(False)
 LEFT_UPPER.pack_propagate(False)
 LEFT_LOWER.pack_propagate(False)
 
-# Configure row and column weights for resizing behavior
+
 window.grid_rowconfigure(1, weight=1)
 window.grid_columnconfigure(0, weight=1)
 window.grid_columnconfigure(2, weight=1)
