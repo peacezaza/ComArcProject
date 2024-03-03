@@ -10,6 +10,18 @@ RESIZE = 8
 RAID_LIST = []
 hddList = []
 
+# HDD1 = HDD('HDD01', 2)
+# HDD2 = HDD('HDD02', 2)
+# HDD3 = HDD('HDD03', 2)
+# HDD4 = HDD('HDD04', 2)
+
+# hddList.append(HDD1)
+# hddList.append(HDD2)
+# hddList.append(HDD3)
+# hddList.append(HDD4)
+
+
+
 R1 = RAID('RAID1', 5)
 
 RAID_LIST.append(R1)
@@ -87,6 +99,9 @@ def on_add_driver_click():
             name_entry.delete(0, tk.END)
             capacity_entry.delete(0, tk.END)
             hddList.append(new_hdd)
+            HDD_Listbox.insert(len(hddList)+1, f'NAME : {new_hdd.getName()}  CAPACITY : {new_hdd.getCapacity()}TB')
+
+            
         else:
             status_label.config(text="Invalid input. Please provide a valid name and capacity.", fg="red")
 
@@ -138,7 +153,7 @@ window.maxsize(1024, 800)
 window.config(bg='gray')
 window.title('RAID SIMULATION')
 path = os.getcwd()
-
+print(f'{path}\\..\\image\\addDriver.png')
 photo_addDriver = tk.PhotoImage(file=f'{path}\\..\\image\\addDriver.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
@@ -181,6 +196,11 @@ RIGTH_FARME.grid(row=1, column=2, sticky='nsew')
 LEFT_UPPER.grid(row=0, columnspan=2, sticky='nsew', pady=10)
 LEFT_MID.grid(row=1, columnspan=2, sticky='nsew', pady=10)
 LEFT_LOWER.grid(row=2, columnspan=2, sticky='nsew', pady=10)
+
+index = 1
+HDD_Listbox = tk.Listbox(LEFT_LOWER , width=50)
+HDD_Listbox.grid(rowspan=1, columnspan=3, sticky='nsew')
+
 
 RAID_Listbox = tk.Listbox(LEFT_UPPER, width=50)
 RAID_Listbox.grid(rowspan=1, columnspan=3, sticky='nsew')
