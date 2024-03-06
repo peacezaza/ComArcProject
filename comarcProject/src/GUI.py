@@ -24,16 +24,26 @@ hddList = []
 
 R1 = RAID('RAID1', 5)
 
+R2 = RAID('RAID0', 5)
+
 RAID_LIST.append(R1)
+
+RAID_LIST.append(R2)
 
 H1 = HDD('HDD1', 2)
 H2 = HDD('HDD2', 2)
 H3 = HDD('HDD3', 2)
 H4 = HDD('HDD4', 1)
+
 R1.addHDD(H1)
 R1.addHDD(H2)
 R1.addHDD(H3)
 R1.addHDD(H4)
+
+R2.addHDD(H1)
+R2.addHDD(H2)
+R2.addHDD(H3)
+R2.addHDD(H4)
 
 for i in R1.getRAIDLS():
     print(f'NAME HDD : {i.getName()} CAPACITY : {i.getCapacity()}TB ')
@@ -51,35 +61,53 @@ def on_raid_listbox_click(event):
 
         for widget in LEFT_MID.winfo_children():
             widget.destroy()
+        for widget in RIGTH_FARME.winfo_children():
+            widget.destroy()
 
         HHD_Listbox = tk.Listbox(LEFT_MID, width=50)
         HHD_Listbox.grid(rowspan=1, columnspan=2, sticky='nsew', padx=0)
 
         # Clear existing elements in the HHD_Listbox
         HHD_Listbox.delete(0, tk.END)
-
+        #Raid  DATA
         index = 1
         print(selected_index[0])
         print(RAID_LIST[selected_index[0]].getRAIDLS())
-        capacity = RAID_LIST[selected_index[0]].getSUMcapacity()
-
+        raid_index = selected_index[0]  # Get the selected RAID index
+        raid = RAID_LIST[raid_index]
+        capacity = raid.getSUMcapacity()
+        
         if len(RAID_LIST[selected_index[0]].getRAIDLS()) != 0:
             for hdd in RAID_LIST[selected_index[0]].getRAIDLS():
                 HHD_Listbox.insert(index, f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB ')
                 index += 1
+                
         else:
             HHD_Listbox.insert(1, "You need add HDD in RAID before Simulator ! ")
-
-        progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
-        progress_bar['value'] = 100
-        progress_bar.grid(row=0, column=0, padx=20, pady=30)
-        label_status = tk.Label(RIGTH_FARME, text=f'{capacity}TB')
+        # progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
+        # progress_bar['value'] = 100
+        # progress_bar.grid(row=0, column=0, padx=20, pady=30)
         # if isinstance(capacity, int):
         #     label_status = tk.Label(RIGTH_FARME,text=f'{capacity}TB')
         # else:
         #     label_status = tk.Label(RIGTH_FARME,text=f'{capacity}')
 
+        #right frame show
+        text_info = tk.Label(RIGTH_FARME, text="Raid Info:")
+        text_info.pack(padx=5, pady=10)
 
+        if raid.getRAIDLS():
+            for hdd in raid.getRAIDLS():
+                info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB')
+                info_label.pack()
+        else:
+            info_label = tk.Label(RIGTH_FARME, text="You need to add HDDs in RAID before Simulator!")
+            info_label.pack()
+
+        capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB')
+        capacity_label.pack(padx=20, pady=10)
+
+   
 def on_add_driver_click():
     def validate_capacity(new_value):
         if new_value.isdigit() or new_value == "":
