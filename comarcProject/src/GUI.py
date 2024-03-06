@@ -148,17 +148,17 @@ def show_left_info():
     for i, raid in enumerate(RAID_LIST):
         capacity = raid.getSUMcapacity()
         # Create labels for RAID name and total capacity
-        text_info = tk.Label(RIGTH_FARME, text=f'{raid.name}',bg='#9290C3',fg="white")
+        text_info = tk.Label(RIGTH_FARME, text=f'{raid.name}',bg='#9290C3',fg="white",font="bold")
         text_info.grid(row=row_count, column=col_count, padx=5)
 
-        capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB',bg='#9290C3',fg="white")
+        capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB',bg='#5F5D9C',fg="white")
         capacity_label.grid(row=row_count + 1, column=col_count, padx=20, pady=10)
 
         # Check if there are HDDs in the RAID
         if raid.getRAIDLS():
             # Display HDD information in the same column
             for j, hdd in enumerate(raid.getRAIDLS()):
-                info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB',bg='#9290C3',fg="white")
+                info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB',bg='#5F5D9C',fg="white")
                 info_label.grid(row=row_count + j + 2, column=col_count, padx=5)
         else:
             # If no HDDs, display a message
