@@ -20,8 +20,8 @@ class HDD:
         return self.readSpeed
 
 class RAID:
-    RAID_LS = []
     def __init__(self,name,level):
+        self.RAID_LS = []
         self.name = name
         self.level = level
 
@@ -42,7 +42,7 @@ class RAID:
             if(i.getCapacity() < min):
                 min = i.getCapacity()
         if(self.level == 0):
-            if len(self.RAID_LS) <= 2:
+            if len(self.RAID_LS) >= 2:
                 for i in self.RAID_LS:
                     sum += i.getCapacity()
                 return sum
@@ -50,7 +50,7 @@ class RAID:
                 return "RAID 0 Need 2 driver"
         elif(self.level == 1):
             if len(self.RAID_LS) >= 2:
-                return ((len(self.RAID_LS)/2)*min)
+                return int(((len(self.RAID_LS)/2)*min))
             else:
                 return "RAID 1 Need 2 driver"
         elif(self.level == 2):

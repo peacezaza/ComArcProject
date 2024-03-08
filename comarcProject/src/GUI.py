@@ -22,26 +22,68 @@ hddList = []
 
 
 
-R1 = RAID('RAID1', 5)
-
-RAID_LIST.append(R1)
+R0 = RAID('RAID0', 0)
+R1 = RAID('RAID1', 1)
+R5 = RAID('RAID5', 5)
+R6 = RAID('RAID6', 6)
 
 H1 = HDD('HDD1', 2)
 H2 = HDD('HDD2', 2)
 H3 = HDD('HDD3', 2)
 H4 = HDD('HDD4', 1)
-R1.addHDD(H1)
-R1.addHDD(H2)
-R1.addHDD(H3)
-R1.addHDD(H4)
 
-for i in R1.getRAIDLS():
+H5 = HDD('HDD5', 1)
+H6 = HDD('HDD6', 1)
+H7 = HDD('HDD7', 1)
+H8 = HDD('HDD8', 2)
+
+H9 = HDD('HDD9', 2)
+H10 = HDD('HDD10', 1)
+H11 = HDD('HDD11', 2)
+H12 = HDD('HDD12', 1)
+
+H13 = HDD('HDD13', 2)
+H14 = HDD('HDD14', 2)
+H15 = HDD('HDD15', 2)
+H16 = HDD('HDD16', 2)
+
+R0.addHDD(H1)
+R0.addHDD(H2)
+R0.addHDD(H3)
+R0.addHDD(H4)
+
+R1.addHDD(H5)
+R1.addHDD(H6)
+R1.addHDD(H7)
+R1.addHDD(H8)
+
+R5.addHDD(H9)
+R5.addHDD(H10)
+R5.addHDD(H11)
+R5.addHDD(H12)
+
+R6.addHDD(H13)
+R6.addHDD(H14)
+R6.addHDD(H15)
+R6.addHDD(H16)
+
+
+
+
+
+
+
+RAID_LIST.append(R0)
+RAID_LIST.append(R1)
+RAID_LIST.append(R5)
+RAID_LIST.append(R6)
+for i in R0.getRAIDLS():
     print(f'NAME HDD : {i.getName()} CAPACITY : {i.getCapacity()}TB ')
 
-if isinstance(R1.getSUMcapacity(), int):
-    print(f'{R1.getSUMcapacity()}TB')
+if isinstance(R0.getSUMcapacity(), int):
+    print(f'{R0.getSUMcapacity()}TB')
 else:
-    print(f'{R1.getSUMcapacity()}')
+    print(f'{R0.getSUMcapacity()}')
 
 
 def on_raid_listbox_click(event):
@@ -51,34 +93,88 @@ def on_raid_listbox_click(event):
 
         for widget in LEFT_MID.winfo_children():
             widget.destroy()
+        # for widget in RIGTH_FARME.winfo_children():
+        #     widget.destroy()
 
         HHD_Listbox = tk.Listbox(LEFT_MID, width=50)
         HHD_Listbox.grid(rowspan=1, columnspan=2, sticky='nsew', padx=0)
 
         # Clear existing elements in the HHD_Listbox
         HHD_Listbox.delete(0, tk.END)
-
+        #Raid  DATA
         index = 1
         print(selected_index[0])
         print(RAID_LIST[selected_index[0]].getRAIDLS())
-        capacity = RAID_LIST[selected_index[0]].getSUMcapacity()
-
+        raid_index = selected_index[0]  # Get the selected RAID index
+        
         if len(RAID_LIST[selected_index[0]].getRAIDLS()) != 0:
             for hdd in RAID_LIST[selected_index[0]].getRAIDLS():
                 HHD_Listbox.insert(index, f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB ')
                 index += 1
+                
         else:
             HHD_Listbox.insert(1, "You need add HDD in RAID before Simulator ! ")
-
-        progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
-        progress_bar['value'] = 100
-        progress_bar.grid(row=0, column=0, padx=20, pady=30)
-        label_status = tk.Label(RIGTH_FARME, text=f'{capacity}TB')
+        # progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
+        # progress_bar['value'] = 100
+        # progress_bar.grid(row=0, column=0, padx=20, pady=30)
         # if isinstance(capacity, int):
         #     label_status = tk.Label(RIGTH_FARME,text=f'{capacity}TB')
         # else:
         #     label_status = tk.Label(RIGTH_FARME,text=f'{capacity}')
 
+        #right frame show
+# def show_left_info():
+#    for i in RAID_LIST:
+#         raid = i
+#         capacity = raid.getSUMcapacity()
+#         text_info = tk.Label(RIGTH_FARME, text=f'{i.name}')
+#         text_info.pack(padx=5, pady=10)
+
+#         if raid.getRAIDLS():
+#             for hdd in raid.getRAIDLS():
+#                 info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB')
+#                 info_label.pack()
+#         else:
+#             info_label = tk.Label(RIGTH_FARME, text="You need to add HDDs in RAID before Simulator!")
+#             info_label.pack()
+
+#         capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB')
+#         capacity_label.pack(padx=20, pady=10)
+def show_left_info():
+    # Counter for managing the grid layout
+    row_count = 0
+    col_count = 0
+
+    for i, raid in enumerate(RAID_LIST):
+        capacity = raid.getSUMcapacity()
+        # Create labels for RAID name and total capacity
+        text_info = tk.Label(RIGTH_FARME, text=f'{raid.name}',bg='#9290C3',fg="white",font="bold")
+        text_info.grid(row=row_count, column=col_count, padx=5)
+
+        capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB',bg='#5F5D9C',fg="white")
+        capacity_label.grid(row=row_count + 1, column=col_count, padx=20, pady=10)
+
+        # Check if there are HDDs in the RAID
+        if raid.getRAIDLS():
+            # Display HDD information in the same column
+            for j, hdd in enumerate(raid.getRAIDLS()):
+                info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB',bg='#5F5D9C',fg="white")
+                info_label.grid(row=row_count + j + 2, column=col_count, padx=5)
+        else:
+            # If no HDDs, display a message
+            info_label = tk.Label(RIGTH_FARME, text="You need to add HDDs in RAID before Simulator!")
+            info_label.grid(row=row_count + 2, column=col_count, padx=5)
+
+        # Increment column count for every RAID
+        col_count += 1
+
+        # Reset column count and increment row count every third RAID
+        if (i + 1) % 3 == 0:
+            col_count = 0
+            row_count += 10  # Adjust as needed for proper spacing between RAID entries
+
+            
+  
 
 def on_add_driver_click():
     def validate_capacity(new_value):
@@ -172,6 +268,7 @@ TOP_FARME = tk.Frame(window, width=1024, height=80, bg='#1B1A55', highlightbackg
 LEFT_FARME = tk.Frame(window, width=300, height=720, bg='#535C91', highlightbackground='#070F2B', highlightthickness=2)
 RIGTH_FARME = tk.Frame(window, width=774, height=720, bg='#9290C3')
 
+
 LEFT_UPPER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
 LEFT_MID = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
 LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightbackground='black', highlightthickness=2)
@@ -208,6 +305,8 @@ index = 1
 for raid in RAID_LIST:
     RAID_Listbox.insert(index, raid.getName())
     index += 1
+
+show_left_info();
 
 RAID_Listbox.bind('<ButtonRelease-1>', on_raid_listbox_click)
 
