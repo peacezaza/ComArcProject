@@ -10,13 +10,15 @@ RESIZE = 8
 RAID_LIST = []
 hddList = []
 
-# HDD1 = HDD('HDD01', 2)
-# HDD2 = HDD('HDD02', 2)
+HDD1 = HDD('HDD01', 2)
+HDD2 = HDD('HDD02', 2)
 # HDD3 = HDD('HDD03', 2)
 # HDD4 = HDD('HDD04', 2)
 
-# hddList.append(HDD1)
-# hddList.append(HDD2)
+hddList.append(HDD1)
+hddList.append(HDD2)
+
+
 # hddList.append(HDD3)
 # hddList.append(HDD4)
 
@@ -242,6 +244,96 @@ def on_add_driver_click():
 
 
 # ...
+def on_add_raid_click():
+    Comboboxes = []
+    def create_raid():
+        global i
+        raid_name = raid_name_entry.get()
+        raid_level = raid_level_entry.get()
+        Hdd_names = []
+        for i in Comboboxes:
+            Hdd_names.append(i.get())
+
+        # Validate input and create RAID object
+        if raid_name and raid_level.isdigit() and Hdd_names:
+            new_raid = RAID(raid_name, int(raid_level))
+            print(Hdd_names)
+            for i in Hdd_names:
+                for j in hddList:
+                    print(j.getName())
+                    if i == j.getName():
+                        new_raid.addHDD(j)
+                        hddList.remove(j)
+            RAID_LIST.append(new_raid)
+            RAID_Listbox.insert(tk.END, new_raid.getName())
+            status_label.config(
+                text=f"New RAID created: {new_raid.getName()} with RAID level {new_raid.getLevel()}",
+                fg="green")
+            popup_window.destroy()
+            HDD_Listbox.delete(0,tk.END)
+            for i in hddList:
+                HDD_Listbox.insert(len(hddList)+1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
+
+        else:
+            status_label.config(text="Invalid input. Please provide a valid name and RAID level.", fg="red")
+
+    def add_More_ComboBox():
+        hdd_label = tk.Label(scroll_frame, text="HDD Name:")
+        hdd_label.pack()
+
+        hdd_names = [hdd.getName() for hdd in hddList]
+        hdd_combobox = ttk.Combobox(scroll_frame, values=hdd_names)
+        hdd_combobox.pack()
+        Comboboxes.append(hdd_combobox)
+
+    popup_window = tk.Toplevel(window)
+    popup_window.title("Add RAID")
+    popup_window.geometry('400x400')
+
+    # Create a Canvas widget with a scrollbar
+    canvas = tk.Canvas(popup_window)
+    scroll_frame = tk.Frame(canvas)
+
+    scrollbar = tk.Scrollbar(popup_window, orient="vertical", command=canvas.yview)
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    scrollbar.pack(side="right", fill="y")
+    canvas.pack(side="left", fill="both", expand=True)
+
+    canvas.create_window((0, 0), window=scroll_frame, anchor="nw", tags="scroll_frame")
+
+    def on_canvas_configure(event):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+    canvas.bind("<Configure>", on_canvas_configure)
+
+    # Create an Entry widget for the RAID name
+    raid_name_label = tk.Label(scroll_frame, text="RAID Name:")
+    raid_name_label.pack(pady=5)
+
+    raid_name_entry = tk.Entry(scroll_frame)
+    raid_name_entry.pack(pady=5)
+
+    # Create an Entry widget for the RAID level
+    raid_level_label = tk.Label(scroll_frame, text="RAID Level:")
+    raid_level_label.pack(pady=5)
+
+    raid_level_entry = tk.Entry(scroll_frame)
+    raid_level_entry.pack(pady=5)
+
+    more_hdd_label = tk.Label(scroll_frame, text="+")
+    more_hdd_btn = tk.Button(scroll_frame, text="+", command=add_More_ComboBox)
+    more_hdd_btn.pack(side=tk.RIGHT)
+
+    # Status Label for success or failure message
+    status_label = tk.Label(scroll_frame, text="", fg="black")
+    status_label.pack(pady=5)
+
+    # Create a button to confirm the RAID creation
+    add_raid_button = tk.Button(scroll_frame, text="Add RAID", command=create_raid)
+    add_raid_button.pack(side=tk.BOTTOM, pady=10)
+
+
 
 
 window = tk.Tk()
@@ -275,7 +367,7 @@ LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightba
 
 
 Button_AddDriver = tk.Button(TOP_FARME, image=resized_image_addDriver, bg='#9290C3', command=on_add_driver_click)
-Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3')
+Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3', command= on_add_raid_click)
 Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3')
 Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
 
@@ -298,6 +390,8 @@ index = 1
 HDD_Listbox = tk.Listbox(LEFT_LOWER , width=50)
 HDD_Listbox.grid(rowspan=1, columnspan=3, sticky='nsew')
 
+for i in hddList:
+    HDD_Listbox.insert(len(hddList) + 1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
 
 RAID_Listbox = tk.Listbox(LEFT_UPPER, width=50)
 RAID_Listbox.grid(rowspan=1, columnspan=3, sticky='nsew')
