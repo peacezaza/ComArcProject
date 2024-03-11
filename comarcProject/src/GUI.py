@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from pathlib import Path
 import os
 from main import HDD, RAID
@@ -94,7 +95,6 @@ def on_raid_listbox_click(event):
     selected_index = RAID_Listbox.curselection()
     print(selected_index)
     if selected_index:
-
         for widget in LEFT_MID.winfo_children():
             widget.destroy()
         # for widget in RIGTH_FARME.winfo_children():
@@ -358,6 +358,26 @@ def on_add_raid_click():
     add_raid_button.pack(side=tk.BOTTOM, pady=10)
 
 
+def on_delete_raid_click():
+    selected_index = RAID_Listbox.curselection()
+
+    if selected_index:
+        # Delete selected item(s) from RAID_Listbox
+        for index in selected_index[::-1]:  # Iterate in reverse order to avoid index issues
+            RAID_Listbox.delete(index)
+
+        # Optionally, you may want to update RAID_LIST and the right frame here
+        # For example, if RAID_LIST is a list of RAID objects, you can delete the corresponding RAID objects:
+        for index in selected_index[::-1]:
+            del RAID_LIST[index]
+
+        show_right_info()  # Update the right frame if needed
+
+    else:
+        tk.messagebox.showwarning("Select RAID", "Please select a RAID to delete.")
+
+
+
 
 
 window = tk.Tk()
@@ -392,7 +412,7 @@ LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightba
 
 Button_AddDriver = tk.Button(TOP_FARME, image=resized_image_addDriver, bg='#9290C3', command=on_add_driver_click)
 Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3', command= on_add_raid_click)
-Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3')
+Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3', command=on_delete_raid_click)
 Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
 
 
