@@ -72,6 +72,8 @@ R6.addHDD(H16)
 
 
 
+def has_duplicates(lst):
+    return len(lst) != len(set(lst))
 
 
 
@@ -108,12 +110,12 @@ def on_raid_listbox_click(event):
         print(selected_index[0])
         print(RAID_LIST[selected_index[0]].getRAIDLS())
         raid_index = selected_index[0]  # Get the selected RAID index
-        
+
         if len(RAID_LIST[selected_index[0]].getRAIDLS()) != 0:
             for hdd in RAID_LIST[selected_index[0]].getRAIDLS():
                 HHD_Listbox.insert(index, f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB ')
                 index += 1
-                
+
         else:
             HHD_Listbox.insert(1, "You need add HDD in RAID before Simulator ! ")
         # progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
@@ -142,7 +144,7 @@ def on_raid_listbox_click(event):
 
 #         capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB')
 #         capacity_label.pack(padx=20, pady=10)
-def show_left_info():
+def show_right_info():
     # Counter for managing the grid layout
     row_count = 0
     col_count = 0
@@ -175,8 +177,8 @@ def show_left_info():
             col_count = 0
             row_count += 10  # Adjust as needed for proper spacing between RAID entries
 
-            
-  
+
+
 
 def on_add_driver_click():
     def validate_capacity(new_value):
@@ -190,16 +192,25 @@ def on_add_driver_click():
         hdd_capacity = capacity_entry.get()
         # Validate input and create HDD object
         if hdd_name and hdd_capacity.isdigit():
-            new_hdd = HDD(hdd_name, int(hdd_capacity))
-            status_label.config(text=f"New HDD created: {new_hdd.getName()} with capacity {new_hdd.getCapacity()}TB",
-                                fg="green")
-            # Clear the input boxes
-            name_entry.delete(0, tk.END)
-            capacity_entry.delete(0, tk.END)
-            hddList.append(new_hdd)
-            HDD_Listbox.insert(len(hddList)+1, f'NAME : {new_hdd.getName()}  CAPACITY : {new_hdd.getCapacity()}TB')
+            try:
+                # Check if the HDD name already exists in the list
+                if hdd_name not in [hdd.getName() for hdd in hddList]:
+                    new_hdd = HDD(hdd_name, int(hdd_capacity))
+                    status_label.config(
+                        text=f"New HDD created: {new_hdd.getName()} with capacity {new_hdd.getCapacity()}TB",
+                        fg="green")
 
-            
+                    # Clear the input boxes
+                    name_entry.delete(0, tk.END)
+                    capacity_entry.delete(0, tk.END)
+
+                    hddList.append(new_hdd)
+                    HDD_Listbox.insert(tk.END, f'NAME : {new_hdd.getName()}  CAPACITY : {new_hdd.getCapacity()}TB')
+                    print("Added HDD")
+                else:
+                    status_label.config(text="Please use a different name", fg="red")
+            except ValueError:
+                status_label.config(text="Invalid capacity. Please provide a valid capacity.", fg="red")
         else:
             status_label.config(text="Invalid input. Please provide a valid name and capacity.", fg="red")
 
@@ -256,26 +267,39 @@ def on_add_raid_click():
 
         # Validate input and create RAID object
         if raid_name and raid_level.isdigit() and Hdd_names:
-            new_raid = RAID(raid_name, int(raid_level))
-            print(Hdd_names)
-            for i in Hdd_names:
-                for j in hddList:
-                    print(j.getName())
-                    if i == j.getName():
-                        new_raid.addHDD(j)
-                        hddList.remove(j)
-            RAID_LIST.append(new_raid)
-            RAID_Listbox.insert(tk.END, new_raid.getName())
-            status_label.config(
-                text=f"New RAID created: {new_raid.getName()} with RAID level {new_raid.getLevel()}",
-                fg="green")
-            popup_window.destroy()
-            HDD_Listbox.delete(0,tk.END)
-            for i in hddList:
-                HDD_Listbox.insert(len(hddList)+1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
+
+            if has_duplicates(Hdd_names):
+                status_label.config(text="Invalid input. Please provide a Valid hdd input", fg="red")
+                print("Duplicated")
+                for i in Comboboxes:
+                    i.delete(0, tk.END)
+
+            else:
+                new_raid = RAID(raid_name, int(raid_level))
+                print(Hdd_names)
+                for i in Hdd_names:
+                    for j in hddList:
+                        print(j.getName())
+                        if i == j.getName():
+                            new_raid.addHDD(j)
+                            hddList.remove(j)
+                RAID_LIST.append(new_raid)
+                RAID_Listbox.insert(tk.END, new_raid.getName())
+                status_label.config(
+                    text=f"New RAID created: {new_raid.getName()} with RAID level {new_raid.getLevel()}",
+                    fg="green")
+                popup_window.destroy()
+
+                for widgets in RIGTH_FARME.winfo_children():
+                    widgets.destroy()
+
+                show_right_info()
+                for i in hddList:
+                    HDD_Listbox.insert(len(hddList)+1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
 
         else:
             status_label.config(text="Invalid input. Please provide a valid name and RAID level.", fg="red")
+
 
     def add_More_ComboBox():
         hdd_label = tk.Label(scroll_frame, text="HDD Name:")
@@ -400,7 +424,7 @@ for raid in RAID_LIST:
     RAID_Listbox.insert(index, raid.getName())
     index += 1
 
-show_left_info();
+show_right_info();
 
 RAID_Listbox.bind('<ButtonRelease-1>', on_raid_listbox_click)
 
@@ -417,3 +441,7 @@ window.grid_columnconfigure(2, weight=1)
 
 window.geometry('1024x800')
 window.mainloop()
+
+
+
+
