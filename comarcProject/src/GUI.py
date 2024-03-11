@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from pathlib import Path
 import os
 from main import HDD, RAID
@@ -72,6 +73,8 @@ R6.addHDD(H16)
 
 
 
+def has_duplicates(lst):
+    return len(lst) != len(set(lst))
 
 
 
@@ -92,7 +95,6 @@ def on_raid_listbox_click(event):
     selected_index = RAID_Listbox.curselection()
     print(selected_index)
     if selected_index:
-
         for widget in LEFT_MID.winfo_children():
             widget.destroy()
         # for widget in RIGTH_FARME.winfo_children():
@@ -108,12 +110,12 @@ def on_raid_listbox_click(event):
         print(selected_index[0])
         print(RAID_LIST[selected_index[0]].getRAIDLS())
         raid_index = selected_index[0]  # Get the selected RAID index
-        
+
         if len(RAID_LIST[selected_index[0]].getRAIDLS()) != 0:
             for hdd in RAID_LIST[selected_index[0]].getRAIDLS():
                 HHD_Listbox.insert(index, f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB ')
                 index += 1
-                
+
         else:
             HHD_Listbox.insert(1, "You need add HDD in RAID before Simulator ! ")
         # progress_bar = ttk.Progressbar(RIGTH_FARME, orient='horizontal', length=660, mode='determinate', variable=100)
@@ -142,7 +144,7 @@ def on_raid_listbox_click(event):
 
 #         capacity_label = tk.Label(RIGTH_FARME, text=f'Total Capacity: {capacity}TB')
 #         capacity_label.pack(padx=20, pady=10)
-def show_left_info():
+def show_right_info():
     # Counter for managing the grid layout
     row_count = 0
     col_count = 0
@@ -175,8 +177,8 @@ def show_left_info():
             col_count = 0
             row_count += 10  # Adjust as needed for proper spacing between RAID entries
 
-            
-  
+
+
 
 def on_add_driver_click():
     def validate_capacity(new_value):
@@ -190,16 +192,25 @@ def on_add_driver_click():
         hdd_capacity = capacity_entry.get()
         # Validate input and create HDD object
         if hdd_name and hdd_capacity.isdigit():
-            new_hdd = HDD(hdd_name, int(hdd_capacity))
-            status_label.config(text=f"New HDD created: {new_hdd.getName()} with capacity {new_hdd.getCapacity()}TB",
-                                fg="green")
-            # Clear the input boxes
-            name_entry.delete(0, tk.END)
-            capacity_entry.delete(0, tk.END)
-            hddList.append(new_hdd)
-            HDD_Listbox.insert(len(hddList)+1, f'NAME : {new_hdd.getName()}  CAPACITY : {new_hdd.getCapacity()}TB')
+            try:
+                # Check if the HDD name already exists in the list
+                if hdd_name not in [hdd.getName() for hdd in hddList]:
+                    new_hdd = HDD(hdd_name, int(hdd_capacity))
+                    status_label.config(
+                        text=f"New HDD created: {new_hdd.getName()} with capacity {new_hdd.getCapacity()}TB",
+                        fg="green")
 
-            
+                    # Clear the input boxes
+                    name_entry.delete(0, tk.END)
+                    capacity_entry.delete(0, tk.END)
+
+                    hddList.append(new_hdd)
+                    HDD_Listbox.insert(tk.END, f'NAME : {new_hdd.getName()}  CAPACITY : {new_hdd.getCapacity()}TB')
+                    print("Added HDD")
+                else:
+                    status_label.config(text="Please use a different name", fg="red")
+            except ValueError:
+                status_label.config(text="Invalid capacity. Please provide a valid capacity.", fg="red")
         else:
             status_label.config(text="Invalid input. Please provide a valid name and capacity.", fg="red")
 
@@ -256,26 +267,39 @@ def on_add_raid_click():
 
         # Validate input and create RAID object
         if raid_name and raid_level.isdigit() and Hdd_names:
-            new_raid = RAID(raid_name, int(raid_level))
-            print(Hdd_names)
-            for i in Hdd_names:
-                for j in hddList:
-                    print(j.getName())
-                    if i == j.getName():
-                        new_raid.addHDD(j)
-                        hddList.remove(j)
-            RAID_LIST.append(new_raid)
-            RAID_Listbox.insert(tk.END, new_raid.getName())
-            status_label.config(
-                text=f"New RAID created: {new_raid.getName()} with RAID level {new_raid.getLevel()}",
-                fg="green")
-            popup_window.destroy()
-            HDD_Listbox.delete(0,tk.END)
-            for i in hddList:
-                HDD_Listbox.insert(len(hddList)+1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
+
+            if has_duplicates(Hdd_names):
+                status_label.config(text="Invalid input. Please provide a Valid hdd input", fg="red")
+                print("Duplicated")
+                for i in Comboboxes:
+                    i.delete(0, tk.END)
+
+            else:
+                new_raid = RAID(raid_name, int(raid_level))
+                print(Hdd_names)
+                for i in Hdd_names:
+                    for j in hddList:
+                        print(j.getName())
+                        if i == j.getName():
+                            new_raid.addHDD(j)
+                            hddList.remove(j)
+                RAID_LIST.append(new_raid)
+                RAID_Listbox.insert(tk.END, new_raid.getName())
+                status_label.config(
+                    text=f"New RAID created: {new_raid.getName()} with RAID level {new_raid.getLevel()}",
+                    fg="green")
+                popup_window.destroy()
+
+                for widgets in RIGTH_FARME.winfo_children():
+                    widgets.destroy()
+
+                show_right_info()
+                for i in hddList:
+                    HDD_Listbox.insert(len(hddList)+1, f'NAME : {i.getName()}  CAPACITY : {i.getCapacity()}TB')
 
         else:
             status_label.config(text="Invalid input. Please provide a valid name and RAID level.", fg="red")
+
 
     def add_More_ComboBox():
         hdd_label = tk.Label(scroll_frame, text="HDD Name:")
@@ -334,6 +358,26 @@ def on_add_raid_click():
     add_raid_button.pack(side=tk.BOTTOM, pady=10)
 
 
+def on_delete_raid_click():
+    selected_index = RAID_Listbox.curselection()
+
+    if selected_index:
+        # Delete selected item(s) from RAID_Listbox
+        for index in selected_index[::-1]:  # Iterate in reverse order to avoid index issues
+            RAID_Listbox.delete(index)
+
+        # Optionally, you may want to update RAID_LIST and the right frame here
+        # For example, if RAID_LIST is a list of RAID objects, you can delete the corresponding RAID objects:
+        for index in selected_index[::-1]:
+            del RAID_LIST[index]
+
+        show_right_info()  # Update the right frame if needed
+
+    else:
+        tk.messagebox.showwarning("Select RAID", "Please select a RAID to delete.")
+
+
+
 
 
 window = tk.Tk()
@@ -346,13 +390,13 @@ photo_addDriver = tk.PhotoImage(file=f'{path}\\..\\image\\addDriver.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
 photo_deleteDriver = tk.PhotoImage(file=f'{path}\\..\\image\\deleteDriver.png')
-photo_setting = tk.PhotoImage(file=f'{path}\\..\\image\\settings.png')
+# photo_setting = tk.PhotoImage(file=f'{path}\\..\\image\\settings.png')
 photo_hardDisk = tk.PhotoImage(file=f'{path}\\..\\image\\hard-disk.png')
 
 resized_image_addDriver = photo_addDriver.subsample(RESIZE, RESIZE)
 resized_image_addRAID = photo_addRAID.subsample(RESIZE, RESIZE)
 resized_image_deleteDriver = photo_deleteDriver.subsample(RESIZE, RESIZE)
-resized_image_setting = photo_setting.subsample(RESIZE, RESIZE)
+# resized_image_setting = photo_setting.subsample(RESIZE, RESIZE)
 resized_image_hardDisk = photo_hardDisk.subsample(RESIZE, RESIZE)
 
 
@@ -368,14 +412,14 @@ LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightba
 
 Button_AddDriver = tk.Button(TOP_FARME, image=resized_image_addDriver, bg='#9290C3', command=on_add_driver_click)
 Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3', command= on_add_raid_click)
-Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3')
-Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
+Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3', command=on_delete_raid_click)
+# Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
 
 
 Button_AddDriver.grid(row=0, column=0, sticky='nsew', padx=20, pady=10)
 Button_AddRAID.grid(row=0, column=1, sticky='nsew', padx=20, pady=10)
 Button_DeleteDriver.grid(row=0, column=2, sticky='nsew', padx=20, pady=10)
-Button_Setting.grid(row=0, column=3, sticky='nsew', padx=20, pady=10)
+# Button_Setting.grid(row=0, column=3, sticky='nsew', padx=20, pady=10)
 
 
 TOP_FARME.grid(row=0, columnspan=3, sticky='nsew')
@@ -400,7 +444,7 @@ for raid in RAID_LIST:
     RAID_Listbox.insert(index, raid.getName())
     index += 1
 
-show_left_info();
+show_right_info();
 
 RAID_Listbox.bind('<ButtonRelease-1>', on_raid_listbox_click)
 
@@ -417,3 +461,7 @@ window.grid_columnconfigure(2, weight=1)
 
 window.geometry('1024x800')
 window.mainloop()
+
+
+
+
