@@ -390,13 +390,13 @@ photo_addDriver = tk.PhotoImage(file=f'{path}\\..\\image\\addDriver.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
 photo_addRAID = tk.PhotoImage(file=f'{path}\\..\\image\\addRAID.png')
 photo_deleteDriver = tk.PhotoImage(file=f'{path}\\..\\image\\deleteDriver.png')
-photo_setting = tk.PhotoImage(file=f'{path}\\..\\image\\settings.png')
+# photo_setting = tk.PhotoImage(file=f'{path}\\..\\image\\settings.png')
 photo_hardDisk = tk.PhotoImage(file=f'{path}\\..\\image\\hard-disk.png')
 
 resized_image_addDriver = photo_addDriver.subsample(RESIZE, RESIZE)
 resized_image_addRAID = photo_addRAID.subsample(RESIZE, RESIZE)
 resized_image_deleteDriver = photo_deleteDriver.subsample(RESIZE, RESIZE)
-resized_image_setting = photo_setting.subsample(RESIZE, RESIZE)
+# resized_image_setting = photo_setting.subsample(RESIZE, RESIZE)
 resized_image_hardDisk = photo_hardDisk.subsample(RESIZE, RESIZE)
 
 
@@ -413,13 +413,13 @@ LEFT_LOWER = tk.Frame(LEFT_FARME, width=300, height=250, bg='white', highlightba
 Button_AddDriver = tk.Button(TOP_FARME, image=resized_image_addDriver, bg='#9290C3', command=on_add_driver_click)
 Button_AddRAID = tk.Button(TOP_FARME, image=resized_image_addRAID, bg='#9290C3', command= on_add_raid_click)
 Button_DeleteDriver = tk.Button(TOP_FARME, image=resized_image_deleteDriver, bg='#9290C3', command=on_delete_raid_click)
-Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
+# Button_Setting = tk.Button(TOP_FARME, image=resized_image_setting, bg='#9290C3')
 
 
 Button_AddDriver.grid(row=0, column=0, sticky='nsew', padx=20, pady=10)
 Button_AddRAID.grid(row=0, column=1, sticky='nsew', padx=20, pady=10)
 Button_DeleteDriver.grid(row=0, column=2, sticky='nsew', padx=20, pady=10)
-Button_Setting.grid(row=0, column=3, sticky='nsew', padx=20, pady=10)
+# Button_Setting.grid(row=0, column=3, sticky='nsew', padx=20, pady=10)
 
 
 TOP_FARME.grid(row=0, columnspan=3, sticky='nsew')
