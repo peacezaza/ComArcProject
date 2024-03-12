@@ -312,7 +312,7 @@ def on_add_raid_click():
 
     popup_window = tk.Toplevel(window)
     popup_window.title("Add RAID")
-    popup_window.geometry('400x400')
+    popup_window.geometry('400x600')
 
     # Create a Canvas widget with a scrollbar
     canvas = tk.Canvas(popup_window)
