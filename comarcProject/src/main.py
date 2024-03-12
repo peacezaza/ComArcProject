@@ -35,6 +35,40 @@ class RAID:
         self.RAID_LS.append(HDD)
     def getRAIDLS(self):
         return self.RAID_LS
+    def readSpeed(self):
+        if(self.level == 0):
+           return len(self.RAID_LS)
+        elif(self.level == 1):
+           return len(self.RAID_LS)
+        elif(self.level == 2):
+           pass
+        elif(self.level == 3):
+            pass
+        elif(self.level == 4):
+            pass
+        elif(self.level == 5):
+            return len(self.RAID_LS)-1
+        elif(self.level == 6):
+           pass
+        elif(self.level == 10):
+           return len(self.RAID_LS)
+    def writeSpeed(self):
+        if(self.level == 0):
+           return len(self.RAID_LS)
+        elif(self.level == 1):
+           return 1
+        elif(self.level == 2):
+           pass
+        elif(self.level == 3):
+            pass
+        elif(self.level == 4):
+            pass
+        elif(self.level == 5):
+            return 1
+        elif(self.level == 6):
+           pass
+        elif(self.level == 10):
+           return int(len(self.RAID_LS)/2)
     def getSUMcapacity(self):
         sum = 0
         min = 100000000

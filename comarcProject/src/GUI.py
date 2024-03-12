@@ -81,7 +81,7 @@ def has_duplicates(lst):
 RAID_LIST.append(R0)
 RAID_LIST.append(R1)
 RAID_LIST.append(R5)
-RAID_LIST.append(R6)
+# RAID_LIST.append(R6)
 for i in R0.getRAIDLS():
     print(f'NAME HDD : {i.getName()} CAPACITY : {i.getCapacity()}TB ')
 
@@ -161,9 +161,15 @@ def show_right_info():
         # Check if there are HDDs in the RAID
         if raid.getRAIDLS():
             # Display HDD information in the same column
+            last_row = 0
+            last_cou = 0
             for j, hdd in enumerate(raid.getRAIDLS()):
                 info_label = tk.Label(RIGTH_FARME, text=f'NAME HDD : {hdd.getName()} CAPACITY : {hdd.getCapacity()}TB',bg='#5F5D9C',fg="white")
                 info_label.grid(row=row_count + j + 2, column=col_count, padx=5)
+                last_row = row_count + j + 2
+                last_cou = col_count
+            info_label = tk.Label(RIGTH_FARME, text=f'Read Speed : {raid.readSpeed()}X   Write Speed : {raid.writeSpeed()}X \n',bg='#5F5D9C',fg="white")
+            info_label.grid(row=last_row+1, column=last_cou, padx=5)
         else:
             # If no HDDs, display a message
             info_label = tk.Label(RIGTH_FARME, text="You need to add HDDs in RAID before Simulator!")
@@ -370,7 +376,10 @@ def on_delete_raid_click():
         # For example, if RAID_LIST is a list of RAID objects, you can delete the corresponding RAID objects:
         for index in selected_index[::-1]:
             del RAID_LIST[index]
-
+        for widgets in RIGTH_FARME.winfo_children():
+                    widgets.destroy()
+        for widgets in LEFT_MID.winfo_children():
+                    widgets.destroy()
         show_right_info()  # Update the right frame if needed
 
     else:
@@ -444,7 +453,7 @@ for raid in RAID_LIST:
     RAID_Listbox.insert(index, raid.getName())
     index += 1
 
-show_right_info();
+show_right_info()
 
 RAID_Listbox.bind('<ButtonRelease-1>', on_raid_listbox_click)
 
