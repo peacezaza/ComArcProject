@@ -49,7 +49,7 @@ class RAID:
         elif(self.level == 5):
             return len(self.RAID_LS)-1
         elif(self.level == 6):
-           pass
+            return len(self.RAID_LS)-2
         elif(self.level == 10):
            return len(self.RAID_LS)
     def writeSpeed(self):
@@ -66,7 +66,7 @@ class RAID:
         elif(self.level == 5):
             return 1
         elif(self.level == 6):
-           pass
+            return 1
         elif(self.level == 10):
            return int(len(self.RAID_LS)/2)
     def getSUMcapacity(self):
