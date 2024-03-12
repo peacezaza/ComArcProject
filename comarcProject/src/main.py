@@ -112,6 +112,11 @@ class RAID:
                 return ((len(self.RAID_LS)-2)*min)
             else:
                 return "RAID 6 Need 4 driver"
+        elif(self.level == 10):
+            if len(self.RAID_LS) >= 4:
+                return int((len(self.RAID_LS)/2)*min)
+            else:
+                return "RAID 10 Need 4 driver"
 
     
 
